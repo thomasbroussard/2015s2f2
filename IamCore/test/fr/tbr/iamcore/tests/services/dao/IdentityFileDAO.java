@@ -4,6 +4,7 @@
 package fr.tbr.iamcore.tests.services.dao;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -32,7 +33,8 @@ public class IdentityFileDAO {
 	public IdentityFileDAO() throws IOException {
 		
 		File file = ensureFileExists(filePath);
-		this.writer = new PrintWriter(file);
+		//open in write mode, but with append directive activated (the "true" parameter)
+		this.writer = new PrintWriter(new FileOutputStream(file, true));
 		this.scanner = new Scanner(file);
 		
 	}
@@ -56,8 +58,24 @@ public class IdentityFileDAO {
 	
 	
 	public List<Identity> readAll(){
+		//Create the result structure
+		List<Identity> identities = new ArrayList<Identity>();
 		
-		return new ArrayList<Identity>();
+		//While we have some remaining lines to read
+		while(scanner.hasNext()){
+			scanner.nextLine(); //we do nothing with this line because it is "--- identity:begin ---"
+			String displayName = scanner.nextLine();
+			String emailAddress = scanner.nextLine();
+			String uid = scanner.nextLine();
+			scanner.nextLine(); //we do nothing with this line because it is "--- identity:end ---"
+			//create an identity with the read properties
+			Identity identity = new Identity(displayName, emailAddress, uid);
+			//put that newly created identity in the list
+			identities.add(identity);
+		}
+		//reset the scanner so we will be able to read from the beginning of the file in the next call
+		scanner.reset();
+		return identities;
 	}
 	
 	public void update(Identity identity){
