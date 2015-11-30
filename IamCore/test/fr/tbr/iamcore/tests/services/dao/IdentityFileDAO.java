@@ -14,6 +14,7 @@ import java.util.Scanner;
 import fr.tbr.iamcore.datamodel.Identity;
 import fr.tbr.iamcore.tests.services.match.Matcher;
 import fr.tbr.iamcore.tests.services.match.impl.ContainsIdentityMatcher;
+import fr.tbr.iamcore.tests.services.match.impl.StartsWithIdentityMatchStrategy;
 
 /**
  * @author tbrou
@@ -30,7 +31,8 @@ public class IdentityFileDAO {
 	// Used to get the data from the file
 	private Scanner scanner;
 	
-	private Matcher<Identity> matcher = new ContainsIdentityMatcher();
+	//TODO we would like this to be configuration driven
+	private Matcher<Identity> matcher = new StartsWithIdentityMatchStrategy();
 
 	public IdentityFileDAO() throws IOException {
 
@@ -57,24 +59,14 @@ public class IdentityFileDAO {
 
 		// While we have some remaining lines to read
 		while (scanner.hasNext()) {
-			scanner.nextLine(); // we do nothing with this line because it is
-								// "--- identity:begin ---"
-			String displayName = scanner.nextLine();
-			String emailAddress = scanner.nextLine();
-			String uid = scanner.nextLine();
-			scanner.nextLine(); // we do nothing with this line because it is
-								// "--- identity:end ---"
-			// create an identity with the read properties
-			Identity identity = new Identity(displayName, emailAddress, uid);
+			Identity identity = readAnIdentity();
 			
 			//check if the identity is matching the criteria
-			
 			if (matcher.match(criteria,identity)){
 				// put that newly created identity in the list
 				identities.add(identity);
 			}
-
-
+			
 		}
 		// reset the scanner so we will be able to read from the beginning of
 		// the file in the next call
@@ -90,15 +82,7 @@ public class IdentityFileDAO {
 
 		// While we have some remaining lines to read
 		while (scanner.hasNext()) {
-			scanner.nextLine(); // we do nothing with this line because it is
-								// "--- identity:begin ---"
-			String displayName = scanner.nextLine();
-			String emailAddress = scanner.nextLine();
-			String uid = scanner.nextLine();
-			scanner.nextLine(); // we do nothing with this line because it is
-								// "--- identity:end ---"
-			// create an identity with the read properties
-			Identity identity = new Identity(displayName, emailAddress, uid);
+			Identity identity = readAnIdentity();
 			// put that newly created identity in the list
 			identities.add(identity);
 		}
@@ -106,6 +90,19 @@ public class IdentityFileDAO {
 		// the file in the next call
 		scanner.reset();
 		return identities;
+	}
+
+	private Identity readAnIdentity() {
+		scanner.nextLine(); // we do nothing with this line because it is
+							// "--- identity:begin ---"
+		String displayName = scanner.nextLine();
+		String emailAddress = scanner.nextLine();
+		String uid = scanner.nextLine();
+		scanner.nextLine(); // we do nothing with this line because it is
+							// "--- identity:end ---"
+		// create an identity with the read properties
+		Identity identity = new Identity(displayName, emailAddress, uid);
+		return identity;
 	}
 
 	public void update(Identity identity) {
