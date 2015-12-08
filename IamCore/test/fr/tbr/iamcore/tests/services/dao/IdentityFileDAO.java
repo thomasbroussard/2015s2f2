@@ -4,6 +4,7 @@
 package fr.tbr.iamcore.tests.services.dao;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,9 +41,13 @@ public class IdentityFileDAO {
 		File file = ensureFileExists(filePath);
 		// open in write mode, but with append directive activated (the "true"
 		// parameter)
+		initIO(file);
+
+	}
+
+	private void initIO(File file) throws FileNotFoundException {
 		this.writer = new PrintWriter(new FileOutputStream(file, true));
 		this.scanner = new Scanner(file);
-
 	}
 
 	public void create(Identity identity) {
@@ -129,11 +134,16 @@ public class IdentityFileDAO {
 		//3 - Close everything and delete the file
 		this.scanner.close();
 		this.writer.close();
-		Path oldFilePath = new File(filePath).toPath();
+		newWriter.close();
+		
+		File file = new File(filePath);
+		Path oldFilePath = file.toPath();
 		Files.delete(oldFilePath);
 		
 		//4 - move the new file to the old file location
 		Files.move(newFile.toPath(), oldFilePath);
+
+		initIO(file);
 		
 		
 	}

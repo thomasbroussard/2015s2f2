@@ -22,13 +22,29 @@ public class TestIdentityFileDao {
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		testReadAll();
+//		testReadAll();
 //		testSearch();
 		
-		
+		testUpdate();
 
 	}
 
+	private static void testUpdate() throws IOException {
+		IdentityFileDAO dao = new IdentityFileDAO();
+		List<Identity> ids = dao.readAll();
+		System.out.println(ids);
+		Identity foundIdentity = ids.get(0);
+		
+		System.out.println(foundIdentity);
+		
+		foundIdentity.setDisplayName("modified from test 2");
+		
+		dao.update(foundIdentity);
+		
+		System.out.println(dao.readAll());
+		
+		
+	}
 	private static void testSearch() throws IOException {
 		IdentityFileDAO dao = new IdentityFileDAO();
 		dao.create(new Identity("clement", "clem@clem.com", "789"));
