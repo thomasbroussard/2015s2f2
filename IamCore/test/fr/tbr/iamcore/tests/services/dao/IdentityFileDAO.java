@@ -7,13 +7,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import fr.tbr.iamcore.datamodel.Identity;
 import fr.tbr.iamcore.tests.services.match.Matcher;
-import fr.tbr.iamcore.tests.services.match.impl.ContainsIdentityMatcher;
 import fr.tbr.iamcore.tests.services.match.impl.StartsWithIdentityMatchStrategy;
 
 /**
@@ -45,12 +46,16 @@ public class IdentityFileDAO {
 	}
 
 	public void create(Identity identity) {
-		writer.println("--- identity:begin ---");
-		writer.println(identity.getDisplayName());
-		writer.println(identity.getEmailAddress());
-		writer.println(identity.getUid());
-		writer.println("--- identity:end ---");
-		writer.flush();
+		writeAnIdentity(identity, this.writer);
+	}
+	
+	private void writeAnIdentity(Identity identity, PrintWriter aWriter){
+		aWriter.println("--- identity:begin ---");
+		aWriter.println(identity.getDisplayName());
+		aWriter.println(identity.getEmailAddress());
+		aWriter.println(identity.getUid());
+		aWriter.println("--- identity:end ---");
+		aWriter.flush();
 	}
 
 	public List<Identity> search(Identity criteria) {
@@ -58,11 +63,11 @@ public class IdentityFileDAO {
 		List<Identity> identities = new ArrayList<Identity>();
 
 		// While we have some remaining lines to read
-		while (scanner.hasNext()) {
+		while (this.scanner.hasNext()) {
 			Identity identity = readAnIdentity();
 			
 			//check if the identity is matching the criteria
-			if (matcher.match(criteria,identity)){
+			if (this.matcher.match(criteria,identity)){
 				// put that newly created identity in the list
 				identities.add(identity);
 			}
@@ -70,7 +75,7 @@ public class IdentityFileDAO {
 		}
 		// reset the scanner so we will be able to read from the beginning of
 		// the file in the next call
-		scanner.reset();
+		this.scanner.reset();
 		return identities;
 
 	}
@@ -81,32 +86,56 @@ public class IdentityFileDAO {
 		List<Identity> identities = new ArrayList<Identity>();
 
 		// While we have some remaining lines to read
-		while (scanner.hasNext()) {
+		while (this.scanner.hasNext()) {
 			Identity identity = readAnIdentity();
 			// put that newly created identity in the list
 			identities.add(identity);
 		}
 		// reset the scanner so we will be able to read from the beginning of
 		// the file in the next call
-		scanner.reset();
+		this.scanner.reset();
 		return identities;
 	}
 
 	private Identity readAnIdentity() {
-		scanner.nextLine(); // we do nothing with this line because it is
+		this.scanner.nextLine(); // we do nothing with this line because it is
 							// "--- identity:begin ---"
-		String displayName = scanner.nextLine();
-		String emailAddress = scanner.nextLine();
-		String uid = scanner.nextLine();
-		scanner.nextLine(); // we do nothing with this line because it is
+		String displayName = this.scanner.nextLine();
+		String emailAddress = this.scanner.nextLine();
+		String uid = this.scanner.nextLine();
+		this.scanner.nextLine(); // we do nothing with this line because it is
 							// "--- identity:end ---"
 		// create an identity with the read properties
 		Identity identity = new Identity(displayName, emailAddress, uid);
 		return identity;
 	}
 
-	public void update(Identity identity) {
-
+	public void update(Identity identity) throws IOException {
+		//be ready to copy into a new file
+		File newFile = ensureFileExists(filePath + "-new");
+		PrintWriter newWriter = new PrintWriter(newFile);
+		
+		//1 - recopy everything except the given identity
+		while(this.scanner.hasNext()){
+			Identity readIndentity = readAnIdentity();
+			if (!readIndentity.getUid().equals(identity.getUid())){
+				writeAnIdentity(readIndentity, newWriter);
+			}
+		}
+		
+		//2 - append the updated version of the identity
+		writeAnIdentity(identity, newWriter);
+		
+		//3 - Close everything and delete the file
+		this.scanner.close();
+		this.writer.close();
+		Path oldFilePath = new File(filePath).toPath();
+		Files.delete(oldFilePath);
+		
+		//4 - move the new file to the old file location
+		Files.move(newFile.toPath(), oldFilePath);
+		
+		
 	}
 
 	public void delete(Identity identity) {
