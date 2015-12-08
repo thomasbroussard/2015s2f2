@@ -45,22 +45,9 @@ public class IdentityFileDAO {
 
 	}
 
-	private void initIO(File file) throws FileNotFoundException {
-		this.writer = new PrintWriter(new FileOutputStream(file, true));
-		this.scanner = new Scanner(file);
-	}
 
 	public void create(Identity identity) {
 		writeAnIdentity(identity, this.writer);
-	}
-	
-	private void writeAnIdentity(Identity identity, PrintWriter aWriter){
-		aWriter.println("--- identity:begin ---");
-		aWriter.println(identity.getDisplayName());
-		aWriter.println(identity.getEmailAddress());
-		aWriter.println(identity.getUid());
-		aWriter.println("--- identity:end ---");
-		aWriter.flush();
 	}
 
 	public List<Identity> search(Identity criteria) {
@@ -80,12 +67,11 @@ public class IdentityFileDAO {
 		}
 		// reset the scanner so we will be able to read from the beginning of
 		// the file in the next call
-		this.scanner.reset();
+		resetScanner();
 		return identities;
 
 	}
-
-
+	
 	public List<Identity> readAll() {
 		// Create the result structure
 		List<Identity> identities = new ArrayList<Identity>();
@@ -98,8 +84,77 @@ public class IdentityFileDAO {
 		}
 		// reset the scanner so we will be able to read from the beginning of
 		// the file in the next call
-		this.scanner.reset();
+		resetScanner();
 		return identities;
+	}
+
+	
+	public void update(Identity identity) throws IOException {
+		//be ready to copy into a new file
+		File newFile = ensureFileExists(filePath + "-new");
+		PrintWriter newWriter = new PrintWriter(newFile);
+		//1 - *
+		copyIdentitiesExcept(identity, newWriter);
+		
+		//2 - append the updated version of the identity
+		writeAnIdentity(identity, newWriter);
+		
+		//3 - Close everything and delete the file
+		this.close();
+		newWriter.close();
+	
+		//4 - *
+		File file = replaceFile(new File(filePath),newFile);
+
+		initIO(file);
+	}
+	
+	public void delete(Identity identity) throws IOException {
+		//be ready to copy into a new file
+		File newFile = ensureFileExists(filePath + "-new");
+		PrintWriter newWriter = new PrintWriter(newFile);
+		
+		//1 - *
+		copyIdentitiesExcept(identity, newWriter);
+		
+		
+		//3 - Close everything and delete the file
+		this.close();
+		newWriter.close();
+		
+		File file = replaceFile(new File(filePath),newFile);
+		
+		initIO(file);
+	}
+
+	
+	private void initIO(File file) throws FileNotFoundException {
+		this.writer = new PrintWriter(new FileOutputStream(file, true));
+		this.scanner = new Scanner(file);
+	}
+
+	
+	private void writeAnIdentity(Identity identity, PrintWriter aWriter){
+		aWriter.println("--- identity:begin ---");
+		aWriter.println(identity.getDisplayName());
+		aWriter.println(identity.getEmailAddress());
+		aWriter.println(identity.getUid());
+		aWriter.println("--- identity:end ---");
+		aWriter.flush();
+	}
+
+
+
+
+
+	private void resetScanner() {
+		this.scanner.close();
+		try {
+			this.scanner = new Scanner(new File(filePath));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private Identity readAnIdentity() {
@@ -115,11 +170,8 @@ public class IdentityFileDAO {
 		return identity;
 	}
 
-	public void update(Identity identity) throws IOException {
-		//be ready to copy into a new file
-		File newFile = ensureFileExists(filePath + "-new");
-		PrintWriter newWriter = new PrintWriter(newFile);
-		
+
+	private void copyIdentitiesExcept(Identity identity, PrintWriter newWriter) {
 		//1 - recopy everything except the given identity
 		while(this.scanner.hasNext()){
 			Identity readIndentity = readAnIdentity();
@@ -127,29 +179,21 @@ public class IdentityFileDAO {
 				writeAnIdentity(readIndentity, newWriter);
 			}
 		}
-		
-		//2 - append the updated version of the identity
-		writeAnIdentity(identity, newWriter);
-		
-		//3 - Close everything and delete the file
+		resetScanner();
+	}
+
+	private void close() {
 		this.scanner.close();
 		this.writer.close();
-		newWriter.close();
-		
-		File file = new File(filePath);
-		Path oldFilePath = file.toPath();
+	}
+
+	private File replaceFile(File oldFile, File newFile) throws IOException {
+		Path oldFilePath = oldFile.toPath();
 		Files.delete(oldFilePath);
 		
 		//4 - move the new file to the old file location
 		Files.move(newFile.toPath(), oldFilePath);
-
-		initIO(file);
-		
-		
-	}
-
-	public void delete(Identity identity) {
-
+		return oldFile;
 	}
 
 	/**
