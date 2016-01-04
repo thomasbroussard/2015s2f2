@@ -45,18 +45,17 @@ public class TestIdentityFileDao {
 	}
 	private static void testUpdate() throws IOException {
 	
-		List<Identity> ids = dao.readAll();
-		System.out.println(ids);
-		Identity foundIdentity = ids.get(0);
+//		List<Identity> ids = dao.readAll();
+//		System.out.println(ids);
+//		Identity foundIdentity = ids.get(0);
+//		
+//		System.out.println(foundIdentity);
+//		
+//		foundIdentity.setDisplayName("modified from test 2");
+//		
+//		dao.update(foundIdentity);
 		
-		System.out.println(foundIdentity);
-		
-		foundIdentity.setDisplayName("modified from test 2");
-		
-		dao.update(foundIdentity);
-		
-		System.out.println(dao.readAll());
-		
+//		System.out.println(dao.readAll());
 		
 	}
 	private static void testSearch() throws IOException {
@@ -77,7 +76,7 @@ public class TestIdentityFileDao {
 	private static void testReadAll() throws IOException {
 		dao.create(new Identity("thomas", "tbr@tbr.com","456"));
 		
-		System.out.println(dao.readAll());
+//		System.out.println(dao.readAll());
 	}
 
 }

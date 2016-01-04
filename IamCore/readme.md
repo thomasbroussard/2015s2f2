@@ -1,3 +1,10 @@
+# Todo (04/01/2015)
+- Happy new year!
+- Include a Date property called "birthDate" in the Identity class
+- complete the search method to deserialize that information from the xml file
+
+
+
 # Todo (14/12/2015)
 - try to make a custom exception to not create a dependency between the IOException and the IdentityDAO interface 
 - begin an xml dao with the readAll() method which is already implemented in the TestXmlDeSerialization class

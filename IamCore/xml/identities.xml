@@ -26,5 +26,6 @@
 		<property name="displayName">Quentin</property>
 		<property name="email">quen@tbr.com</property>
 		<property name="guid">987456123</property>
+		<property name="birthDate">19/06/1988</property>
 	</identity>
 </identities>

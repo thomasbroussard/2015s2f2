@@ -12,6 +12,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import fr.tbr.iamcore.datamodel.Identity;
+
 //Serialization: memory to persistable representation
 //Deserialization : persistable representation to memory
 public class TestXmlDeSerialization {
@@ -20,8 +22,8 @@ public class TestXmlDeSerialization {
 		//testXmlDeserialization();
 		
 		IdentityXmlDAO xmlDAO = new IdentityXmlDAO();
-		
-		System.out.println(xmlDAO.search(null));
+		Identity criteria = new Identity("Quen", "cle", null);
+		System.out.println(xmlDAO.search(criteria));
 		
 
 	}
