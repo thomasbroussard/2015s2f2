@@ -1,4 +1,11 @@
-# Todo (04/01/2015)
+# Todo (11/01/2016)
+- find a way to optimize the readAll and the search method from the IdentityXmlDAO
+- Create one table using the DataSourceExplorer of eclipse
+- Review the SQL language
+
+
+
+# Todo (04/01/2016)
 - Happy new year!
 - Include a Date property called "birthDate" in the Identity class
 - complete the search method to deserialize that information from the xml file
