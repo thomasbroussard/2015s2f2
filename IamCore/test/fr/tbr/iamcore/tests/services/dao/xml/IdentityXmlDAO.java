@@ -1,7 +1,9 @@
 package fr.tbr.iamcore.tests.services.dao.xml;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -60,6 +62,7 @@ public class IdentityXmlDAO implements IdentityDAO {
 
 					// declare and initialize several variables on the same line
 					String displayName = "", guid = "", email = "";
+					Date birthDate = null;
 					// for every found property
 					for (int j = 0; j < length; j++) {
 						Node item = properties.item(j);
@@ -81,6 +84,11 @@ public class IdentityXmlDAO implements IdentityDAO {
 							case "email":
 								email = textContent;
 								break;
+								
+							case "birthDate":
+								birthDate = new SimpleDateFormat("dd/MM/yyyy").parse(textContent);
+								break;
+								
 							default:
 								// the encountered property name is not expected
 								// so we use the "default" case
@@ -89,6 +97,7 @@ public class IdentityXmlDAO implements IdentityDAO {
 						}
 					}
 					Identity currentIdentity = new Identity(displayName, email, guid);
+					currentIdentity.setBirthDate(birthDate);
 					//usage of Matcher to filter only the wished identities.
 					if (this.matcher.match(criteria, currentIdentity)){
 						results.add(currentIdentity);

@@ -1,5 +1,7 @@
 package fr.tbr.iamcore.datamodel;
 
+import java.util.Date;
+
 
 /**
  * This is the representation for the Identity, the main datamodel to manage in IamCore
@@ -11,7 +13,7 @@ public class Identity {
 	private String displayName;
 	private String emailAddress;
 	private String uid;
-	
+	private Date birthDate;
 	
 	
 	/**
@@ -31,7 +33,7 @@ public class Identity {
 	 * @return the displayName
 	 */
 	public String getDisplayName() {
-		return displayName;
+		return this.displayName;
 	}
 
 
@@ -49,7 +51,7 @@ public class Identity {
 	 * @return the emailAddress
 	 */
 	public String getEmailAddress() {
-		return emailAddress;
+		return this.emailAddress;
 	}
 
 
@@ -67,7 +69,7 @@ public class Identity {
 	 * @return the uid
 	 */
 	public String getUid() {
-		return uid;
+		return this.uid;
 	}
 
 
@@ -81,13 +83,26 @@ public class Identity {
 
 
 
+
+
+	public Date getBirthDate() {
+		return this.birthDate;
+	}
+
+
+
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Identity [displayName=" + displayName + ", emailAddress="
-				+ emailAddress + ", uid=" + uid + "]";
+		return "Identity [displayName=" + this.displayName + ", emailAddress=" + this.emailAddress + ", uid=" + this.uid + ", birthDate=" + this.birthDate + "]";
 	}
 	
 	
