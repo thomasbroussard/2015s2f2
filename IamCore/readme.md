@@ -1,3 +1,7 @@
+#Todo
+- compare the DS explorer with HeidiSQL [http://www.heidisql.com/](http://www.heidisql.com/ "http://www.heidisql.com/") 
+
+
 # Todo (11/01/2016)
 - find a way to optimize the readAll and the search method from the IdentityXmlDAO
 - Create one table using the DataSourceExplorer of eclipse
@@ -8,8 +12,7 @@
 # Todo (04/01/2016)
 - Happy new year!
 - Include a Date property called "birthDate" in the Identity class
-- complete the search method to deserialize that information from the xml file
-
+- complete the search method to deserialize that information from the xml fill
 
 
 # Todo (14/12/2015)

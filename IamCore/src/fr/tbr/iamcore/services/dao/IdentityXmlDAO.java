@@ -47,8 +47,8 @@ public class IdentityXmlDAO implements IdentityDAO {
 		}
 	}
 
-	@Override
-	public List<Identity> search(Identity criteria) {
+	
+	private List<Identity> searchInternal(Identity criteria, Matcher<Identity> matcher) {
 		List<Identity> results = new ArrayList<Identity>();
 		// gets all the nodes called "identity" (see xml/identities.xml in
 		// the project)
@@ -66,7 +66,7 @@ public class IdentityXmlDAO implements IdentityDAO {
 			if (node instanceof Element) {
 				Identity identity = readOneIdentityFromXmlElement(node);
 				// usage of Matcher to filter only the wished identities.
-				if (this.matcher.match(criteria, identity)) {
+				if (matcher == null || matcher.match(criteria, identity)) {
 					results.add(identity);
 				}
 			}
@@ -74,31 +74,13 @@ public class IdentityXmlDAO implements IdentityDAO {
 		return results;
 	}
 	
+	@Override
+	public List<Identity> search(Identity criteria) {
+		return searchInternal(criteria, this.matcher);
+	}
+	
 	public List<Identity> readAll(){
-		List<Identity> results = new ArrayList<Identity>();
-		// gets all the nodes called "identity" (see xml/identities.xml in
-		// the project)
-		NodeList nodes = this.doc.getElementsByTagName("identity");
-		int nodesSize = nodes.getLength();
-
-		// for every found identity
-		for (int i = 0; i < nodesSize; i++) {
-			Node node = nodes.item(i);
-			// test if the found node is really an Element
-			// in the DOM implementation a Node can represent an Element, an
-			// Attribute or a TextContent
-			// so we have to be sure that the found node is of type
-			// "Element" using the instanceof operator
-			if (node instanceof Element) {
-				Identity identity = readOneIdentityFromXmlElement(node);
-				// usage of Matcher to filter only the wished identities.
-				
-				results.add(identity);
-			
-			}
-		}
-
-		return results;
+		return searchInternal(null, null);
 		
 	}
 	private Identity readOneIdentityFromXmlElement(Node node) {
