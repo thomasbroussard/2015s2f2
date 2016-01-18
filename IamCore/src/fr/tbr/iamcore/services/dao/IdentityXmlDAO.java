@@ -1,4 +1,4 @@
-package fr.tbr.iamcore.tests.services.dao.xml;
+package fr.tbr.iamcore.services.dao;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -15,7 +15,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import fr.tbr.iamcore.datamodel.Identity;
-import fr.tbr.iamcore.services.dao.IdentityDAO;
 import fr.tbr.iamcore.tests.services.match.Matcher;
 import fr.tbr.iamcore.tests.services.match.impl.StartsWithIdentityMatchStrategy;
 
@@ -25,16 +24,23 @@ public class IdentityXmlDAO implements IdentityDAO {
 
 	Document doc;
 
+	// Intermediate instance to build a document builder (the factory to
+	// parse DOM documents)
+	private static DocumentBuilderFactory dbf ;
+	// DOM Document builder, to get an empty document or parse it from
+	// an xml source
+	private static DocumentBuilder db ;
+	
+	
 	public IdentityXmlDAO() {
 		try {
-			// Intermediate instance to build a document builder (the factory to
-			// parse DOM documents)
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			// DOM Document builder, to get an empty document or parse it from
-			// an xml source
-			DocumentBuilder db = dbf.newDocumentBuilder();
+			
+			if (db == null){
+				dbf = DocumentBuilderFactory.newInstance();
+				db = dbf.newDocumentBuilder();
+			}
 			// Document representation in Java
-			this.doc = db.parse("F:\\Work\\Dev\\Git\\Epita\\Fundamentals\\2015s2f2\\IamCore\\xml\\identities.xml");
+			this.doc = db.parse("C:\\Work\\Dev\\Git\\Epita\\Fundamentals\\2015s2f2\\IamCore\\xml\\identities.xml");
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO complete exception handling
@@ -58,7 +64,6 @@ public class IdentityXmlDAO implements IdentityDAO {
 			// so we have to be sure that the found node is of type
 			// "Element" using the instanceof operator
 			if (node instanceof Element) {
-
 				Identity identity = readOneIdentityFromXmlElement(node);
 				// usage of Matcher to filter only the wished identities.
 				if (this.matcher.match(criteria, identity)) {
@@ -66,10 +71,8 @@ public class IdentityXmlDAO implements IdentityDAO {
 				}
 			}
 		}
-
 		return results;
 	}
-
 	
 	public List<Identity> readAll(){
 		List<Identity> results = new ArrayList<Identity>();
@@ -87,7 +90,6 @@ public class IdentityXmlDAO implements IdentityDAO {
 			// so we have to be sure that the found node is of type
 			// "Element" using the instanceof operator
 			if (node instanceof Element) {
-
 				Identity identity = readOneIdentityFromXmlElement(node);
 				// usage of Matcher to filter only the wished identities.
 				

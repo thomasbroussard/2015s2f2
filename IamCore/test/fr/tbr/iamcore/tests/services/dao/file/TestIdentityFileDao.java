@@ -8,6 +8,7 @@ import java.util.List;
 
 import fr.tbr.iamcore.datamodel.Identity;
 import fr.tbr.iamcore.services.dao.IdentityDAO;
+import fr.tbr.iamcore.services.dao.IdentityFileDAO;
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.tbr.iamcore.tests.services.dao.file;
+package fr.tbr.iamcore.services.dao;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import fr.tbr.iamcore.datamodel.Identity;
-import fr.tbr.iamcore.services.dao.IdentityDAO;
 import fr.tbr.iamcore.tests.services.match.Matcher;
 import fr.tbr.iamcore.tests.services.match.impl.StartsWithIdentityMatchStrategy;
 

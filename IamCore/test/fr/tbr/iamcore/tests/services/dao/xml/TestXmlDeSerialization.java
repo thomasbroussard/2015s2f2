@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import fr.tbr.iamcore.datamodel.Identity;
+import fr.tbr.iamcore.services.dao.IdentityXmlDAO;
 
 //Serialization: memory to persistable representation
 //Deserialization : persistable representation to memory
