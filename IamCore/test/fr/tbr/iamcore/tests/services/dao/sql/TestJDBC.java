@@ -2,6 +2,7 @@ package fr.tbr.iamcore.tests.services.dao.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TestJDBC {
@@ -11,7 +12,11 @@ public class TestJDBC {
 		
 		try {
 			Connection dbConnection = DriverManager.getConnection(url, "tom", "tom");
-			dbConnection.prepareStatement("select * from IDENTITIES").executeQuery();
+			ResultSet rs = dbConnection.prepareStatement("select * from IDENTITIES").executeQuery();
+			while (rs.next()){
+				System.out.println(rs.getString(2));
+			}
+			dbConnection.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
