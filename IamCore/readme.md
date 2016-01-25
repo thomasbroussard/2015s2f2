@@ -1,12 +1,19 @@
+#TODO (25/01/2016)
+- finish the "insert" testcase
+- submit the cardsdeck (optional)
+
+
+
 #Todo
-- compare the DS explorer with HeidiSQL [http://www.heidisql.com/](http://www.heidisql.com/ "http://www.heidisql.com/") 
+- compare the DS explorer with HeidiSQL [http://www.heidisql.com/](http://www.heidisql.com/ "http://www.heidisql.com/")
+- add the derbyclient.jar to the project classpath (configure your eclipse project)
+- make the testcase TestJDBC run on your environment. 
 
 
 # Todo (11/01/2016)
 - find a way to optimize the readAll and the search method from the IdentityXmlDAO
 - Create one table using the DataSourceExplorer of eclipse
 - Review the SQL language
-
 
 
 # Todo (04/01/2016)
